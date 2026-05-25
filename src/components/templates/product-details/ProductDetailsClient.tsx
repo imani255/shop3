@@ -13,7 +13,8 @@ import {
   Trash2,
   Settings,
   PlusCircle,
-  Loader2
+  Loader2,
+  Share2
 } from 'lucide-react';
 import { generateHtml } from '@/lib/server-html';
 import { RatingStars } from '@/components/ui/rating-stars';
@@ -28,6 +29,7 @@ import { useSession } from 'next-auth/react';
 import { Suspense } from 'react';
 import ReviewsSection from '@/components/storefront/ReviewsSection';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ShareDialog from '@/components/storefront/ShareDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -71,6 +73,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   const [eligibility, setEligibility] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('description');
   const [shouldScrollToReviewForm, setShouldScrollToReviewForm] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
 
   // Derive available options from variants
   const uniqueColors = useMemo(() =>
@@ -518,6 +521,15 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
               <span className="font-bold text-foreground">{product.numReviews || 0}</span>
               <span>Reviews</span>
             </div>
+            <Separator orientation="vertical" className="h-4" />
+            <button
+              onClick={() => setIsShareOpen(true)}
+              className="flex items-center gap-1.5 text-sm font-bold text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+              title="Share product"
+            >
+              <Share2 className="h-4 w-4" />
+              <span>Share</span>
+            </button>
             {eligibility?.eligible && (
               <>
                 <Separator orientation="vertical" className="h-4" />
@@ -812,6 +824,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <ShareDialog isOpen={isShareOpen} onOpenChange={setIsShareOpen} title={product.name} />
     </div>
   );
 }
